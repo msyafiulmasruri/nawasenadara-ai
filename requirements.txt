@@ -1,0 +1,32 @@
+# --- Web framework ---
+fastapi>=0.111,<1
+uvicorn[standard]>=0.30,<1
+pydantic-settings>=2.3,<3
+python-dotenv>=1.0,<2
+
+# --- Model NLP (IndoBERT, dilatih via PyTorch, disajikan via TensorFlow) ---
+# torch WAJIB ada meski serving pakai TensorFlow — dipakai sekali oleh
+# transformers untuk membaca bobot PyTorch (from_pt=True) lalu
+# dikonversi ke tensor TensorFlow saat model dimuat pertama kali.
+tensorflow-cpu>=2.16,<2.17
+transformers>=4.41,<5
+torch>=2.2,<3
+
+# tf-keras WAJIB ada berdampingan dengan tensorflow>=2.16 di atas.
+# Sejak versi 2.16, `tensorflow-cpu` membawa Keras 3 sebagai default,
+# tapi kelas TF di `transformers` (TFAutoModelForSequenceClassification,
+# dipakai di app/services/sentiment_model.py) BELUM mendukung Keras 3 —
+# tanpa paket ini, model.load() gagal dengan:
+#   "ValueError: Your currently installed version of Keras is Keras 3,
+#   but this is not yet supported in Transformers."
+# `tf-keras` adalah paket resmi Keras yang menyediakan API Keras 2
+# (backward-compatible) di atas TensorFlow yang sama, supaya
+# transformers tetap bisa memakai jalur TF lama tanpa perlu downgrade
+# TensorFlow itu sendiri.
+tf-keras>=2.16,<2.17
+
+# --- Groq (chatbot konseling) ---
+groq>=0.9,<1
+
+# --- HTTP client (dipakai groq SDK, & berguna untuk testing manual) ---
+httpx>=0.27,<1

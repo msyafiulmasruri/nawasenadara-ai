@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.example
+model/*.safetensors
+model/*.bin
+model/*.h5
+.pytest_cache/
