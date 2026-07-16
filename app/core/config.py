@@ -15,7 +15,11 @@ class Settings(BaseSettings):
     max_sequence_length: int = 128
 
     groq_api_key: str = ""
-    groq_model: str = "llama-3.3-70b-versatile"
+    # Default diganti dari llama-3.3-70b-versatile (di-deprecate resmi
+    # oleh Groq 17 Juni 2026) ke openai/gpt-oss-120b, rekomendasi
+    # migrasi resmi Groq untuk workload setara — lihat
+    # https://console.groq.com/docs/deprecations
+    groq_model: str = "openai/gpt-oss-120b"
 
     internal_api_key: str = ""
 

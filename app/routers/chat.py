@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
+from groq import APIStatusError as GroqAPIStatusError
 
 from app.core.security import verify_internal_api_key
 from app.schemas import CounselingChatRequest, CounselingChatResponse
@@ -37,6 +38,34 @@ def counseling_chat(
             history=payload.history,
             sentiment_model=model,
             groq_client=groq_client,
+        )
+    except GroqAPIStatusError as exc:
+        # Ditangkap TERPISAH dari except Exception generic di bawah,
+        # supaya error dari Groq (mis. model_decommissioned kalau
+        # GROQ_MODEL di .env sudah di-deprecate — lihat
+        # https://console.groq.com/docs/deprecations) dapat pesan yang
+        # jelas & actionable, bukan hilang jadi 500 generic yang cuma
+        # kelihatan di server log.
+        logger.exception("Groq API error saat memproses chat konseling")
+        error_code = None
+        try:
+            error_code = exc.body.get("error", {}).get("code") if exc.body else None
+        except AttributeError:
+            error_code = None
+
+        if error_code == "model_decommissioned":
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Model Groq yang dikonfigurasi (GROQ_MODEL di .env) sudah "
+                    "tidak didukung lagi (decommissioned). Cek model aktif "
+                    "terbaru di https://console.groq.com/docs/models dan "
+                    "perbarui GROQ_MODEL."
+                ),
+            )
+        raise HTTPException(
+            status_code=502,
+            detail="Groq API mengembalikan error saat memproses chat konseling.",
         )
     except Exception:
         logger.exception("Gagal memproses chat konseling")
