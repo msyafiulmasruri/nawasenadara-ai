@@ -36,12 +36,12 @@ code nawasenadaranlpservice
 ### 2. Buat virtual environment Python
 Buka terminal di VS Code (`` Ctrl+` ``):
 ```bash
-python3 m venv .venv
+python3 -m venv .venv
 ```
 atau
 
 ```bash
-py m venv .venv
+py -m venv .venv
 ```
 
 Aktifkan:
