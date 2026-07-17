@@ -10,7 +10,7 @@ Service ini **tidak untuk diakses langsung oleh frontend/pemain** - dipanggil se
 
 ## Catatan penting sebelum mulai
 
-**Model kamu dilatih pakai PyTorch, bukan TensorFlow.** Notebook training pakai `transformers.Trainer` + `torch`, dan `config.json` menyebut arsitektur `BertForSequenceClassification` (kelas PyTorch). Supaya tetap bisa disajikan lewat TensorFlow tanpa retraining, kode di sini memuat model dengan:
+**Model dilatih dengan PyTorch, bukan TensorFlow.** Notebook training menggunakan `transformers.Trainer` + `torch`, dan `config.json` menyebut arsitektur `BertForSequenceClassification` (kelas PyTorch). Supaya tetap bisa disajikan lewat TensorFlow tanpa retraining, kode di sini memuat model dengan:
 
 ```python
 TFAutoModelForSequenceClassification.from_pretrained(model_dir, from_pt=True)
